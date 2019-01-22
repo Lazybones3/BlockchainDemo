@@ -1,0 +1,35 @@
+buildscript {
+    ext {
+        springBootVersion = '1.5.19.RELEASE'
+    }
+    repositories {
+        //mavenCentral()
+        maven {
+            url 'http://maven.aliyun.com/nexus/content/groups/public/'
+        }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+
+group = 'com.learning'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+repositories {
+    //mavenCentral()
+    maven {
+        url 'http://maven.aliyun.com/nexus/content/groups/public/'
+    }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+//    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    compile group: 'commons-io', name: 'commons-io', version: '2.6'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}

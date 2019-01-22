@@ -1,0 +1,76 @@
+package com.learning.handbyhandbtc;
+
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+
+public class Notebook {
+
+    //保存数据的集合
+    private ArrayList<String> list = new ArrayList<>();
+
+    public Notebook() {
+        File file = new File("a.json");
+        try {
+            if (file.exists() && file.length() > 0) {
+                ObjectMapper objectMapper = new ObjectMapper();
+                //反序列化
+                JavaType javaType = objectMapper.getTypeFactory().constructParametricType(ArrayList.class, String.class);
+                list = objectMapper.readValue(file, javaType);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //添加封面，创世区块
+    public void addGenesis(String genesis) {
+        if (list.size() > 0) {
+            //添加时必须是新账本
+            throw new RuntimeException("添加封面时，必须是新账本");
+        }
+        list.add(genesis);
+        save2Disk();
+    }
+
+    //添加交易记录，普通区块
+    public void addNote(String note) {
+        if(list.size() < 1) {
+            //添加时必须已经有封面
+            throw new RuntimeException("添加记录时，必须已经有封面");
+        }
+        list.add(note);
+        save2Disk();
+    }
+
+    //展示交易记录
+    public ArrayList<String> showlist() {
+        for (String s : list) {
+            System.out.println(s);
+        }
+        return list;
+    }
+
+    //保存数据 xml json
+    public void save2Disk() {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            //序列化
+            objectMapper.writeValue(new File("a.json"), list);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //测试
+//    public static void main(String[] args) {
+//        Notebook notebook = new Notebook();
+////        notebook.addGenesis("这是账本封面");
+////        notebook.addNote("张三给李四100");
+//        notebook.addNote("张三给王五100");
+//        notebook.showlist();
+//    }
+}

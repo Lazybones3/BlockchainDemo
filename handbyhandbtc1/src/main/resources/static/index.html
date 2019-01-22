@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Home</title>
+  <link rel="stylesheet" href="css/bootstrap.css"/>
+  <style>
+    body{
+      margin: 30px;
+    }
+    #idInput{
+      width: 500px;
+    }
+    #result{
+      padding: 15px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+
+<input type="text" class="form-control" id="idInput" placeholder="请输入内容"/>
+<div class="btn-goup btn-group-lg">
+  <button type="button" class="btn btn-default" onclick="addGenesis()">添加封面</button>
+  <button type="button" class="btn btn-default" onclick="addNote()">添加记录</button>
+  <button type="button" class="btn btn-default" onclick="check()">校验数据</button>
+</div>
+<p class="bg-info" id="result"></p>
+<table class="table">
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>内容</th>
+    <th>哈希值</th>
+    <th>工作量证明</th>
+    <th>上个hash</th>
+  </tr>
+  </thead>
+  <tbody id="tbody"></tbody>
+</table>
+
+<script src="js/jquery-3.3.1.min.js"></script>
+<script src="js/bootstrap.js"></script>
+<script src="js/jsrsasign-all-min.js"></script>
+<script>
+  function addGenesis() {
+      var content = $("#idInput").val();
+      $.post("addGenesis", "genesis=" + content, function (data) {
+          $("#result").html(data);
+          //展示最新的数据
+          showlist();
+          //清空输入框
+          $("#idInput").val("");
+      });
+  }
+
+  function addNote() {
+      var content = $("#idInput").val();
+      $.post("addNote", "note=" + content, function (data) {
+          $("#result").html(data);
+          //展示最新的数据
+          showlist();
+          //清空输入框
+          $("#idInput").val("");
+      });
+  }
+
+  function showlist() {
+      $.get("showlist", function (data) {
+          //清空数据
+          $("#tbody").html("");
+          for (var i = 0; i < data.length; i++) {
+              var block = data[i];
+              var id = block.id;
+              var content = block.content;
+              var hash = block.hash;
+              var nonce = block.nonce;
+              var preHash = block.preHash;
+
+              $("#tbody").append("<tr><td>"+id+"</td><td>"+content+"</td><td>"+hash+"</td><td>"+nonce+"</td><td>"+preHash+"</td></tr>")
+          }
+
+          // $("#result").html(data);
+      });
+  }
+
+  function check() {
+      $.get("check", function (data) {
+          $("#result").html(data);
+      })
+  }
+
+  //打开页面展示数据
+  $(function () {
+      showlist();
+  })
+</script>
+
+</body>
+</html>
